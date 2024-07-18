@@ -27,7 +27,7 @@
 
 <h2>Применимость</h2>
 Может быть использован для системы управления вращением датчиков таких как  
-<B>Garmin Panoptix</B> или __Lowrance Active Target__  
+<B>Garmin Panoptix</B> или <B>Lowrance Active Target</B>  
  
 <h2>Совместимость</h2>
 Совместима со всеми Arduino платформами (используются Arduino-функции)  
