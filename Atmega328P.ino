@@ -48,8 +48,8 @@ void setup() {
   pinMode(LedPin, OUTPUT);
 
   stepper.autoPower(true);
-  stepper.setAcceleration(150); // установка ускорения в шагах/сек/сек
-  stepper.setMaxSpeed(SpeedMax); // установка скорости в шагах/сек/сек
+  stepper.setAcceleration(500); // установка ускорения в шагах/сек 0 - без ускорения
+  stepper.setMaxSpeed(SpeedMax); // установка скорости в шагах/сек
   stepper.disable();
 }
 
