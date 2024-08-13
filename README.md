@@ -26,7 +26,7 @@
 - __ANGLE__ изменяет сектор сканирования 10&deg; - 360&deg;<br>
 Ссылка на <a href="https://youtu.be/_9E2vSRK5No">YouTube</a> <br>
 <br>
-# Программирование пультов
+<h2>Программирование пультов</h2>
 Ссылка на <a href="https://dzen.ru/video/watch/66b5f1579cfcc32754c732f5">Дзен</a> <br>
 
 <h2>Применимость</h2>
