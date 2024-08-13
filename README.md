@@ -35,4 +35,4 @@
 Совместима со всеми Arduino платформами (используются Arduino-функции)  
 <h2>Схема соединений</h2>  
   
-![alt text](https://github.com/BalandinSV/Arduino-based-Panoptix-mount/blob/main/Wiring%20diagram.png)
+![alt text](https://github.com/BalandinSV/ABPM8-firmware/blob/main/Wiring%20diagram%20RF.png)
