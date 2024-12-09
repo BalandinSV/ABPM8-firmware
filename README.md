@@ -59,9 +59,10 @@
 Например, для изменени ПЧ редуктора на 4 заменяем<br>
 
 ```diff 
-- #define GearRatio 1
+! #define GearRatio 1
 ```
 <br> 
+$${\color{red}Red}$$
 на<br>
 #define GearRatio 4 <br>
 <br>
