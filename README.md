@@ -60,7 +60,7 @@
 
 ```diff 
 #define GearRatio 1
-```<br> 
+``` <br> 
 на<br>
 #define GearRatio 4 <br>
 <br>
