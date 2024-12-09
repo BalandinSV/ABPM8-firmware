@@ -58,10 +58,8 @@
 Для настройки вписываем свои значения в секции настроек после соответствующего #define<br>
 Например, для изменени ПЧ редуктора на 4 заменяем<br>
 
-```diff 
-! #define GearRatio 1
-```
-$\color{#D29922}\textsf{\Large\&#x26A0;\kern{0.2cm}\normalsize Warning}$ 
+#define GearRatio 1
+
 $\color{#58A6FF}\textsf{\Large\&#x24D8;\kern{0.2cm}\normalsize Note}$
 <br> 
 на<br>
