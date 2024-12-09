@@ -57,7 +57,7 @@
 <h2>Настройка</h2>
 Для настройки вписываем свои значения в секции настроек после соответствующего #define<br>
 Например, для изменени ПЧ редуктора на 4 заменяем<br>
-<font color="blue">#define GearRatio 1</font> <br>
+<p><font color="blue">#define GearRatio 1</font></p> <br>
 на<br>
 #define GearRatio 4 <br>
 <br>
