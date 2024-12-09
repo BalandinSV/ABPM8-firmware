@@ -60,7 +60,7 @@
 
 $\color{brown}{\textsf{\\#define GearRatio 1}}$ <br> 
 на<br>
-$\color{brown}{\textsf{\\#define GearRatio }}$ <br>
+$\color{brown}{\textsf{\\#define GearRatio 4}}$ <br>
 <br>
 Текст после войнойного слэша $\color{green}{\textsf{// будет проигнорирован программой}}$
 <h2>Видео</h2>
