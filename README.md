@@ -56,12 +56,11 @@
 </p>
 <h2>Настройка</h2>
 Для настройки вписываем свои значения в секции настроек после соответствующего #define<br>
-Например, для изменени ПЧ редуктора на 4 заменяем<br><br>
+Например, для изменени ПЧ редуктора на 4 заменяем<br>
 
 $\color{brown}{\textsf{\\#define GearRatio 1}}$ <br> 
 на<br>
-$\color{brown}{\textsf{\\#define GearRatio 4}}$ <br><br>
-
+$\color{brown}{\textsf{\\#define GearRatio 4}}$ <br>
 Текст после войнойного слэша $\color{green}{\textsf{// будет проигнорирован программой}}$
 <h2>Видео</h2>
 Ссылка на <a href="https://youtu.be/_9E2vSRK5No">YouTube</a> <br>
