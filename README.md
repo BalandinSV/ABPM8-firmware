@@ -60,7 +60,7 @@
 
 $\color{brown}{\textsf{\\#define GearRatio 1}}$ $\color{green}{\textsf{ // Передаточное число редуктора}}$ <br> 
 на<br>
-$\color{brown}{\textsf{\\#define GearRatio 4}}$ <br>
+$\color{brown}{\textsf{\\#define GearRatio 4}}$ $\color{green}{\textsf{ // Передаточное число редуктора}}$ <br>
 Текст после войнойного слэша $\color{green}{\textsf{// будет проигнорирован программой}}$
 <h2>Видео</h2>
 Ссылка на <a href="https://youtu.be/_9E2vSRK5No">YouTube</a> <br>
