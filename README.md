@@ -63,6 +63,7 @@
 ```
 <br> 
 $${\color{red}Red}$$
+$\color{red}{\textsf{lorem ipsum}}$
 ${\textsf{\color{lightgreen}Green}}$
 на<br>
 #define GearRatio 4 <br>
