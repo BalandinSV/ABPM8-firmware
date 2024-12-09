@@ -64,9 +64,6 @@
 $\color{#D29922}\textsf{\Large\&#x26A0;\kern{0.2cm}\normalsize Warning}$ 
 $\color{#58A6FF}\textsf{\Large\&#x24D8;\kern{0.2cm}\normalsize Note}$
 <br> 
-$${\color{red}Красный}$$
-$\color{red}{\textsf{lorem ipsum}}$
-${\textsf{\color{lightgreen}Green}}$
 на<br>
 #define GearRatio 4 <br>
 <br>
