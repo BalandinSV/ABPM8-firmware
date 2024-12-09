@@ -1,5 +1,7 @@
-/* Программа для управления шаговым двигателем NEMA 23 с помощью драйвера TB6600 или совместимого
-добавлена поддержка радиопультов. Приемник SYN480R
+/*
+Программа для управления шаговым двигателем NEMA 23 с помощью драйвера TMC2160 или совместимого
+добавлена поддержка радио пультов. 
+Приемник SYN480R
 
 MIT License
 
@@ -25,24 +27,27 @@ SOFTWARE.
 
 Потенциометр SPEED подключается к A6
 Потенциометр ANGLE подключается к A7
-Кнопка Right - A0
-Кнопка Left -  A1
+Кнопка/педаль Right  - A0
+Кнопка/педаль Left -  A1
 Кнопка Scan - A2
 Кнопка Breake - A3
-Выход приемника DATA подключается на - D2
-Питание приемника VCC с вывода 3v3 Arduino
+
+Arduino UNO     SYN480R
+  GND             GND
+  3V3             VCC
+  D2              DAT
+
+Arduino UNO     TMC2160
+  D6             CLK
+  D7             DIR
+  D8             EN
+
 Схема подключения и описание режимов https://github.com/BalandinSV/ABPM8-firmware
 */
-#include <GyverStepper2.h> // https://github.com/GyverLibs/GyverStepper
-#include <RCSwitch.h> // Библиотека для работы с пультом https://github.com/sui77/rc-switch/tree/master
+#include "GyverStepper.h" // https://github.com/GyverLibs/GyverStepper
+#include "RCSwitch.h" // Библиотека для работы с пультом https://github.com/sui77/rc-switch/tree/master
 #include <EEPROM.h> //Библиотека для работы с ПЗУ
-//GStepper< STEPPER2WIRE> stepper(steps, step, dir, en); // драйвер step-dir + пин enable
-//3200 импульсов на оборот. Для TB6600 (S1-OFF, S2-OFF, S3-ON)
-// PUL - D8 pin
-// DIR - D7 pin
-// ENABLE - D6 pin
-GStepper2<STEPPER2WIRE> stepper(3200, 8, 7, 6); 
-RCSwitch mySwitch = RCSwitch();
+
 
 //////////////////// СЕКЦИЯ НАСТРОЕК ////////////////////////
 
@@ -53,13 +58,39 @@ RCSwitch mySwitch = RCSwitch();
 #define AnglePot A6
 #define SpeedPot A7
 #define LedPin 13
-#define ScanAngleMin 10.00 // Минимальный угол сканирования
-#define ScanAngleMax 360.00 // Максимальный угол сканирования
-#define SpeedMin 20 // Минимальная угловая скорость шаг/сек
-#define SpeedMax 1000 // Максимальная угловая скорость шаг/сек
-#define Acceleration 500 // Ускорение. 0 - выключено
 
-/////////////////////////////////////////////////////////////
+#define StepPin 6
+#define DirPin 7
+#define EnablePin 8
+#define MicroStep 6400 //6400 импульсов на оборот. MRES = 32 Для TMC2160 (M0-OFF, M1-ON)
+
+#define ScanAngleMin 10.00 // Минимальный угол сканирования
+#define ScanAngleMax 180.00 // Максимальный угол сканирования половина сектора сканирования
+#define SpeedMin 20 // Минимальная угловая скорость шаг/сек
+#define SpeedMax 800 // Максимальная угловая скорость шаг/сек
+#define Acceleration 0 // Ускорение. 0 - выключено
+//#define AngleToStep 4.44 // 1600/360=4.44 для 1600 шаг/об
+//#define AngleToStep 8.89 // 3200/360=8.89 для 3200 шаг/об
+#define AngleToStep 17.78 // 6400/360=17.78 для 6400 шаг/об
+//#define AngleToStep 35.55 // 12800/360=35.55 для 12800 шаг/об
+#define GearRatio 1 // Передаточное число редуктора
+
+/////////////////////// РЕЖИМ ОТЛАДКИ /////////////////////
+//#define DEBUG // Раскомментировать для активации сообщений при отладке
+
+#ifdef DEBUG
+    #define DEBUG_PRINT(x) Serial.print(x)
+    #define DEBUG_PRINTF(x, y) Serial.print(x, y)
+    #define DEBUG_PRINTLN(x) Serial.println(x)
+    #define DEBUG_PRINTLNF(x, y) Serial.println(x, y)
+    #define DEBUG_BEGIN(x) Serial.begin(x)
+#else
+    #define DEBUG_PRINT(x)
+    #define DEBUG_PRINTF(x, y)
+    #define DEBUG_PRINTLN(x)
+    #define DEBUG_PRINTLNF(x, y)
+    #define DEBUG_BEGIN(x)
+#endif
 
 bool TransmitButton_A = false;
 bool TransmitButton_B = false;
@@ -70,15 +101,27 @@ bool LeftButtonState = false;
 bool ScanButtonState = false;
 bool BreakeButtonState = false;
 bool ScanMode = false;
+bool StabilisationMode = false;
+bool StabilisationModeGlobal = false;
 bool BreakeState = false;
 bool dir = true;
-int32_t ScanAngle = 120;
+
 long TransmitButton;
-bool ScanModeFirst = true;
+
 uint32_t btnTimer = 0;
+int32_t ScanAngle = 120;
 uint32_t TransmitButtonCode_A[3]; //Массив для хранения кодов кнопок А разных брелоков 3 х 4 байта 
 uint32_t TransmitButtonCode_B[3]; //Массив для хранения кодов кнопок B разных брелоков 3 х 4 байта
 uint32_t TransmitButtonCode_AB[3]; //Массив для хранения кодов кнопок А+B разных брелоков 3 х 4 байта
+
+float BaseAngle = 0;
+float CurrentAngle = 0;
+float Correct = 0;
+
+//GStepper< STEPPER2WIRE> stepper(steps, step, dir, en); // драйвер step-dir + пин enable
+
+GStepper<STEPPER2WIRE> stepper(MicroStep, StepPin, DirPin, EnablePin); // Инициализируем драйвер
+RCSwitch mySwitch = RCSwitch(); // Инициализируем приемник
 
 bool CheckCode (uint32_t CurrentCode)
 {
@@ -128,17 +171,19 @@ void Settings(){
        BreakeButtonState = true;
        btnTimer = millis();
       }
-     if (!digitalRead(BreakeButton) && BreakeButtonState && millis() - btnTimer > 5000) {
+     if (!digitalRead(BreakeButton) && BreakeButtonState && millis() - btnTimer > 5000)
+      {
        BreakeButtonState = false;
        btnTimer = millis();
        digitalWrite(LedPin, HIGH);
-         // Записываем в EEPROM нули
-             for (uint8_t i = 0; i<36; i++){
-               EEPROM.put(i, 0);
-             }
-             SettingComplite = true;
-             delay(3000);
-                     
+        // Записываем в EEPROM нули
+        for (uint8_t i = 0; i<36; i++)
+        {
+          EEPROM.put(i, 0);
+        }
+        DEBUG_PRINTLN("EEPROM ERASED");
+        SettingComplite = true;
+        delay(3000);  
       }
      if (digitalRead(BreakeButton) && BreakeButtonState && millis() - btnTimer > 100) {
        BreakeButtonState = false;
@@ -149,30 +194,30 @@ void Settings(){
       if (millis() - TimerRF > 150)
       {
         TimerRF = millis();
-         if (mySwitch.available())
-         {
-             switch (ProgButton)
-             {
-              case 0:
-                 {
-                    if (CheckCode(mySwitch.getReceivedValue()))
-                    {
-                       TransmitButtonSeting[ProgButton] = (mySwitch.getReceivedValue());
-                       ProgButton = 1;
-                       blink_mode = 4;
-                       break;
-                    } 
-                 } 
-                 break;
+        if (mySwitch.available())
+        {
+          switch (ProgButton)
+          {
+            case 0:
+            {
+              if (CheckCode(mySwitch.getReceivedValue()))
+                {
+                  TransmitButtonSeting[ProgButton] = (mySwitch.getReceivedValue());
+                  ProgButton = 1;
+                  blink_mode = 4;
+                  break;
+                } 
+                } 
+                break;
               case 1:
                  {
-                    if ((CheckCode(mySwitch.getReceivedValue())) && (mySwitch.getReceivedValue() != TransmitButtonSeting[0]))
-                    {
-                       TransmitButtonSeting[ProgButton] = (mySwitch.getReceivedValue());
-                       ProgButton = 2;
-                       blink_mode = 5;
-                       break;
-                    } 
+                  if ((CheckCode(mySwitch.getReceivedValue())) && (mySwitch.getReceivedValue() != TransmitButtonSeting[0]))
+                  {
+                    TransmitButtonSeting[ProgButton] = (mySwitch.getReceivedValue());
+                    ProgButton = 2;
+                    blink_mode = 5;
+                    break;
+                  } 
                  } 
                  break;;
               case 2:
@@ -183,13 +228,13 @@ void Settings(){
                        // Записываем коды кнопок в ПЗУ //
                              for (uint8_t i = 2; i >0; i--)
                                 {
-                                   TransmitButtonCode_A[i] = TransmitButtonCode_A[i-1];
-                                   TransmitButtonCode_B[i] = TransmitButtonCode_B[i-1];
-                                   TransmitButtonCode_AB[i] = TransmitButtonCode_AB[i-1];
+                                  TransmitButtonCode_A[i] = TransmitButtonCode_A[i-1];
+                                  TransmitButtonCode_B[i] = TransmitButtonCode_B[i-1];
+                                  TransmitButtonCode_AB[i] = TransmitButtonCode_AB[i-1];
                                 }
-                                  TransmitButtonCode_A[0] = TransmitButtonSeting[0];
-                                  TransmitButtonCode_B[0] = TransmitButtonSeting[1];
-                                  TransmitButtonCode_AB[0] = TransmitButtonSeting[2];
+                          TransmitButtonCode_A[0] = TransmitButtonSeting[0];
+                          TransmitButtonCode_B[0] = TransmitButtonSeting[1];
+                          TransmitButtonCode_AB[0] = TransmitButtonSeting[2];
 
                           EEPROM.put(0, TransmitButtonCode_A);
                           EEPROM.put(12, TransmitButtonCode_B);
@@ -218,25 +263,25 @@ void GetTransmitButton (){
        {
          if (mySwitch.getReceivedValue() == TransmitButtonCode_A[i])
             {
-                TransmitButton_A = true;
-                TransmitButton_B = false;
-                TransmitButton_AB = false;
-                break;
+              TransmitButton_A = true;
+              TransmitButton_B = false;
+              TransmitButton_AB = false;
+              break;
             }
          else if ((mySwitch.getReceivedValue() == TransmitButtonCode_B[i]))
-         {
-                TransmitButton_A = false;
-                TransmitButton_B = true;
-                TransmitButton_AB = false;
-                break;
-         }
+            {
+              TransmitButton_A = false;
+              TransmitButton_B = true;
+              TransmitButton_AB = false;
+              break;
+            }
          else if ((mySwitch.getReceivedValue() == TransmitButtonCode_AB[i]))
-         {
-                TransmitButton_A = false;
-                TransmitButton_B = false;
-                TransmitButton_AB = true;
-                break;
-         }
+            {
+              TransmitButton_A = false;
+              TransmitButton_B = false;
+              TransmitButton_AB = true;
+              break;
+            }
         }
       mySwitch.resetAvailable();
    }
@@ -250,22 +295,24 @@ void GetTransmitButton (){
 }
 
 void setup() {
-  //Serial.begin(115200);
+  DEBUG_BEGIN(115200);
   pinMode(RightButton, INPUT_PULLUP);
   pinMode(LeftButton, INPUT_PULLUP);
   pinMode(ScanButton, INPUT_PULLUP);
   pinMode(BreakeButton, INPUT_PULLUP);
   pinMode(LedPin, OUTPUT);
 
+ // Настройка шагового мотора
   stepper.autoPower(true);
   stepper.setAcceleration(Acceleration); // установка ускорения в шагах/сек/сек
-  stepper.setMaxSpeed(SpeedMax); // установка скорости в шагах/сек/сек
+  stepper.setMaxSpeed(SpeedMax * GearRatio); // установка скорости в шагах/сек/сек
   stepper.disable();
   mySwitch.enableReceive(0);  // Инициализация приемника на pin 2 (Interrupt 0)
   EEPROM.get(0, TransmitButtonCode_A); // Читаем из ПЗУ массив кодов кнопок А
   EEPROM.get(12, TransmitButtonCode_B); // Читаем из ПЗУ массив кодов кнопок В
   EEPROM.get(24, TransmitButtonCode_AB); // Читаем из ПЗУ массив кодов кнопок АВ
 
+  // Вход в режим программирования пультов
   if (!digitalRead(BreakeButton)){
   BreakeButtonState = true;
   Settings();
@@ -273,6 +320,7 @@ void setup() {
   EEPROM.get(12, TransmitButtonCode_B); // Читаем из ПЗУ массив кодов кнопок В
   EEPROM.get(24, TransmitButtonCode_AB); // Читаем из ПЗУ массив кодов кнопок АВ}
   }
+  DEBUG_PRINTLN("Run");
 }
 
 void loop() {
@@ -284,7 +332,7 @@ void loop() {
   static uint32_t tmr1;
   if (millis() - tmr1 > 50) {
     tmr1 = millis();
-    stepper.setMaxSpeed(map(analogRead(SpeedPot), 0, 1023, SpeedMin, SpeedMax));
+    if (!StabilisationMode) stepper.setMaxSpeed(map(analogRead(SpeedPot), 0, 1023, SpeedMin, SpeedMax) * GearRatio);
   }
 
     // Опрашиваем потенциометр ANGLE
@@ -292,62 +340,83 @@ void loop() {
   static uint32_t tmr2;
   if (millis() - tmr2 > 50) {
     tmr2 = millis();
-    ScanAngle = (map(analogRead(AnglePot), 0, 1023, ScanAngleMin, ScanAngleMax));
+    if (!StabilisationMode) ScanAngle = (map(analogRead(AnglePot), 0, 1023, ScanAngleMin, ScanAngleMax));
   }
 
     // Опрашиваем кнопку BREAKE
 
-  if (!digitalRead(BreakeButton) && !BreakeButtonState && millis() - btnTimer > 100) {
+  if (!digitalRead(BreakeButton) && !ScanMode && !BreakeButtonState && millis() - btnTimer > 100) {
     BreakeButtonState = true;
     btnTimer = millis();
     BreakeState = !BreakeState;
     stepper.autoPower(!BreakeState);
-    delay(100);
-    if (BreakeState) stepper.enable();
-       else stepper.disable();
+    BreakeState ? stepper.enable() : stepper.disable();
+    stepper.brake();
+    StabilisationMode = BreakeState;
+    StabilisationModeGlobal = StabilisationMode;
     digitalWrite(LedPin, BreakeState);
   }
-  if (digitalRead(BreakeButton) && BreakeButtonState && millis() - btnTimer > 100) {
-    BreakeButtonState = false;
-    btnTimer = millis();
-  }
+  if (digitalRead(BreakeButton) && BreakeButtonState && millis() - btnTimer > 100)
+    {
+      BreakeButtonState = false;
+      btnTimer = millis();
+    }
   
   // Правая кнопка нажата
-  if ((!digitalRead(RightButton) || TransmitButton_A) && !RightButtonState && !LeftButtonState) {
+  if ((!digitalRead(RightButton) || TransmitButton_A) && !RightButtonState) {
     RightButtonState = true;
+    StabilisationMode = false;
     ScanMode = false;
-    ScanModeFirst = true;
-    stepper.enable();
-    stepper.setTargetDeg(-360.00, RELATIVE);
+    stepper.setMaxSpeed(SpeedMax * GearRatio);
+    stepper.setAcceleration(Acceleration);
+    stepper.reset();
+    delay(50);
+    stepper.setTarget(-1*round(360 * AngleToStep * GearRatio), RELATIVE);
     } 
 
   // Правая кнопка отпущена
   
   if ((digitalRead(RightButton) && !TransmitButton_A && !TransmitButton_B && !TransmitButton_AB ) && RightButtonState) {
     RightButtonState = false;
-       if (!ScanMode) stepper.brake();
-  }
+        if (!ScanMode)
+        {
+          stepper.reset();
+          StabilisationMode = StabilisationModeGlobal;
+        }
+    }
   
   // Левая кнопка нажата
-    if ((!digitalRead(LeftButton) || TransmitButton_B) && !LeftButtonState && !RightButtonState) {
+    if ((!digitalRead(LeftButton) || TransmitButton_B) && !LeftButtonState) {
     LeftButtonState = true;
+    StabilisationMode = false;
     ScanMode = false;
-    ScanModeFirst = true;
-    stepper.enable();
-    stepper.setTargetDeg(360.00, RELATIVE);
-  }
+    stepper.setMaxSpeed(SpeedMax * GearRatio);
+    stepper.setAcceleration(Acceleration);
+    stepper.reset();
+    delay(50);
+    stepper.setTarget(round(360 * AngleToStep * GearRatio), RELATIVE);
+    }
 
   // Левая кнопка отпущена
   if ((digitalRead(LeftButton) && !TransmitButton_A && !TransmitButton_B && !TransmitButton_AB) && LeftButtonState) {
     LeftButtonState = false;
-       if (!ScanMode) stepper.brake();
+    //stepper.setAcceleration(0);
+        if (!ScanMode) {
+          stepper.reset();
+          StabilisationMode = StabilisationModeGlobal;
+        }
   } 
 
   // Одновременно нажаты левая и правая кнопки
 
    if ((!digitalRead(RightButton) && !digitalRead(LeftButton)) || !digitalRead(ScanButton) || TransmitButton_AB) {
+   //if (((RightButtonState) && (LeftButtonState)) || !digitalRead(ScanButton) || TransmitButton_AB) {
+   StabilisationMode = false;
+   stepper.brake();
+   stepper.setMaxSpeed(SpeedMax * GearRatio);
+   stepper.setAcceleration(Acceleration);
    ScanMode = true;
-   ScanModeFirst = true;
+   stepper.reset();
    dir = true; 
    delay(100);
   }
@@ -355,18 +424,11 @@ void loop() {
 
 // Режим сканирования
 
-if (ScanMode){
-           
-       if (ScanModeFirst) {
-          ScanModeFirst = false;
-          stepper.enable();
-          stepper.setTargetDeg(ScanAngle/2, RELATIVE);
-          }
-       else if (!stepper.tick())
+if (ScanMode)
+  {
+       if (!stepper.tick())
        { dir = !dir;
-         stepper.setTargetDeg(dir ? ScanAngle : -1*ScanAngle, RELATIVE);
+         stepper.setTarget(dir ? round(ScanAngle * AngleToStep * GearRatio) : -1*round(ScanAngle * AngleToStep * GearRatio), ABSOLUTE);
        } 
-       
    } 
-
 }
