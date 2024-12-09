@@ -70,7 +70,7 @@ ${\textsf{\color{lightgreen}Green}}$
 на<br>
 #define GearRatio 4 <br>
 <br>
-Текст после войнойного слэша ${\color{green}// будет проигнорирован программой}$
+Текст после войнойного слэша ${\color{green}{\textsf{// будет проигнорирован программой}}$
 <h2>Видео</h2>
 Ссылка на <a href="https://youtu.be/_9E2vSRK5No">YouTube</a> <br>
 Ссылка на <a href="https://dzen.ru/video/watch/66b5f1579cfcc32754c732f5">Дзен</a> <br>
