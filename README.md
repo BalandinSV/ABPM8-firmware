@@ -58,7 +58,7 @@
 Для настройки вписываем свои значения в секции настроек после соответствующего #define<br>
 Например, для изменени ПЧ редуктора на 4 заменяем<br>
 
-$\color{brown}{\textsf{\\#define GearRatio 1}}$ <br> 
+$\color{brown}{\textsf{\\#define GearRatio 1}}$ $\color{green}{\textsf{ // Передаточное число редуктора}}$ <br> 
 на<br>
 $\color{brown}{\textsf{\\#define GearRatio 4}}$ <br>
 Текст после войнойного слэша $\color{green}{\textsf{// будет проигнорирован программой}}$
