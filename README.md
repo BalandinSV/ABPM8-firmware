@@ -66,7 +66,7 @@
 ```c++
 #define GearRatio 4 // Передаточное число редуктора
 ```
-Текст после двойнойного слэша $\color{green}{\textsf{// Игнорируется программой}}$
+Текст после двойнойного слэша $\color{grey}{\textsf{// Игнорируется программой}}$
 <h2>Видео</h2>
 Ссылка на <a href="https://youtu.be/_9E2vSRK5No">YouTube</a> <br>
 Ссылка на <a href="https://dzen.ru/video/watch/66b5f1579cfcc32754c732f5">Дзен</a> <br>
