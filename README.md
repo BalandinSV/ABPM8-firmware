@@ -83,7 +83,7 @@ __```CLK```__ - Pulse Тактовые импульсы
 <h2>Полезные сыылки</h2>
 <a href="https://youtu.be/_9E2vSRK5No">YouTube</a> <br>
 <a href="https://dzen.ru/video/watch/66b5f1579cfcc32754c732f5">Дзен</a> <br>
-<a href="https://dzen.ru/video/watch/66b5f1579cfcc32754c732f5">Telegram</a> <br>
+<a href="https://t.me/+-x8t7C2Ub1M3YzEy">Telegram</a> <br>
 
 <h2>Применимость</h2>
 Может быть использован для системы управления вращением датчиков таких как<br>
