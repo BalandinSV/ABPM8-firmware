@@ -82,7 +82,7 @@ __```CLK```__ - Pulse Тактовые импульсы
 Текст после двойнойного слэша $\color{grey}{\textsf{// Игнорируется программой}}$
 <h2>Полезные сcылки</h2>
 
-<img src="[image-url](https://github.com/BalandinSV/test-1.0/blob/main/telegram_2111646.png)" alt="Alt Text" width="16" height="16">
+<img src="https://github.com/BalandinSV/test-1.0/blob/main/telegram_2111646.png)" alt="Alt Text" width="16" height="16">
 
 <a href="https://youtu.be/_9E2vSRK5No">YouTube</a> <br>
 <a href="https://dzen.ru/video/watch/66b5f1579cfcc32754c732f5">Дзен</a> <br>
