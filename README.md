@@ -59,7 +59,7 @@
 Например, для изменения ПЧ редуктора на 4 заменяем<br>
 
  ```c++
- #define GearRatio 1
+ #define GearRatio 1 // Передаточное число редуктора
  ```
     
 $\color{brown}{\textsf{\\#define GearRatio 1}}$ $\color{green}{\textsf{ // Передаточное число редуктора}}$ <br> 
