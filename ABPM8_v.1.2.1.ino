@@ -30,7 +30,7 @@ SOFTWARE.
 Кнопка/педаль Right  - A0
 Кнопка/педаль Left -  A1
 Кнопка Scan - A2
-Кнопка Breake - A3
+Кнопка Break - A3
 
 Arduino UNO     SYN480R
   GND             GND
