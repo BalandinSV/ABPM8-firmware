@@ -80,7 +80,7 @@ __```CLK```__ - Pulse Тактовые импульсы
 #define GearRatio 4 // Передаточное число редуктора
 ```
 Текст после двойнойного слэша $\color{grey}{\textsf{// Игнорируется программой}}$
-<h2>Полезные сыылки</h2>
+<h2>Полезные сcылки</h2>
 <a href="https://youtu.be/_9E2vSRK5No">YouTube</a> <br>
 <a href="https://dzen.ru/video/watch/66b5f1579cfcc32754c732f5">Дзен</a> <br>
 <a href="https://t.me/+-x8t7C2Ub1M3YzEy">Telegram</a> <br>
