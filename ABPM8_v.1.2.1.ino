@@ -54,7 +54,7 @@ Arduino UNO     TMC2160
 #define RightButton A0
 #define LeftButton A1
 #define ScanButton A2
-#define BreakeButton A3
+#define BrakeButton A3
 #define AnglePot A6
 #define SpeedPot A7
 #define LedPin 13
@@ -99,11 +99,11 @@ bool TransmitButton_AB = false;
 bool RightButtonState = false;
 bool LeftButtonState = false;
 bool ScanButtonState = false;
-bool BreakeButtonState = false;
+bool BrakeButtonState = false;
 bool ScanMode = false;
 bool StabilisationMode = false;
 bool StabilisationModeGlobal = false;
-bool BreakeState = false;
+bool BrakeState = false;
 bool dir = true;
 
 long TransmitButton;
@@ -166,14 +166,14 @@ void Settings(){
        blink_loop++;  
         }
 
-   // Проверяем долгое нажатие кнопки Breake, если да, то стираем коды всех передатчков
-     if (!digitalRead(BreakeButton) && !BreakeButtonState && millis() - btnTimer > 100) {
-       BreakeButtonState = true;
+   // Проверяем долгое нажатие кнопки Brake, если да, то стираем коды всех передатчков
+     if (!digitalRead(BrakeButton) && !BrakeButtonState && millis() - btnTimer > 100) {
+       BrakeButtonState = true;
        btnTimer = millis();
       }
-     if (!digitalRead(BreakeButton) && BreakeButtonState && millis() - btnTimer > 5000)
+     if (!digitalRead(BrakeButton) && BrakeButtonState && millis() - btnTimer > 5000)
       {
-       BreakeButtonState = false;
+       BrakeButtonState = false;
        btnTimer = millis();
        digitalWrite(LedPin, HIGH);
         // Записываем в EEPROM нули
@@ -185,8 +185,8 @@ void Settings(){
         SettingComplite = true;
         delay(3000);  
       }
-     if (digitalRead(BreakeButton) && BreakeButtonState && millis() - btnTimer > 100) {
-       BreakeButtonState = false;
+     if (digitalRead(BrakeButton) && BrakeButtonState && millis() - btnTimer > 100) {
+       BrakeButtonState = false;
        btnTimer = millis();
       }
    
@@ -299,7 +299,7 @@ void setup() {
   pinMode(RightButton, INPUT_PULLUP);
   pinMode(LeftButton, INPUT_PULLUP);
   pinMode(ScanButton, INPUT_PULLUP);
-  pinMode(BreakeButton, INPUT_PULLUP);
+  pinMode(BrakeButton, INPUT_PULLUP);
   pinMode(LedPin, OUTPUT);
 
  // Настройка шагового мотора
@@ -313,8 +313,8 @@ void setup() {
   EEPROM.get(24, TransmitButtonCode_AB); // Читаем из ПЗУ массив кодов кнопок АВ
 
   // Вход в режим программирования пультов
-  if (!digitalRead(BreakeButton)){
-  BreakeButtonState = true;
+  if (!digitalRead(BrakeButton)){
+  BrakeButtonState = true;
   Settings();
   EEPROM.get(0, TransmitButtonCode_A); // Читаем из ПЗУ массив кодов кнопок А
   EEPROM.get(12, TransmitButtonCode_B); // Читаем из ПЗУ массив кодов кнопок В
@@ -345,20 +345,20 @@ void loop() {
 
     // Опрашиваем кнопку BREAKE
 
-  if (!digitalRead(BreakeButton) && !ScanMode && !BreakeButtonState && millis() - btnTimer > 100) {
-    BreakeButtonState = true;
+  if (!digitalRead(BrakeButton) && !ScanMode && !BrakeButtonState && millis() - btnTimer > 100) {
+    BrakeButtonState = true;
     btnTimer = millis();
-    BreakeState = !BreakeState;
-    stepper.autoPower(!BreakeState);
-    BreakeState ? stepper.enable() : stepper.disable();
+    BrakeState = !BrakeState;
+    stepper.autoPower(!BrakeState);
+    BrakeState ? stepper.enable() : stepper.disable();
     stepper.brake();
-    StabilisationMode = BreakeState;
+    StabilisationMode = BrakeState;
     StabilisationModeGlobal = StabilisationMode;
-    digitalWrite(LedPin, BreakeState);
+    digitalWrite(LedPin, BrakeState);
   }
-  if (digitalRead(BreakeButton) && BreakeButtonState && millis() - btnTimer > 100)
+  if (digitalRead(BrakeButton) && BrakeButtonState && millis() - btnTimer > 100)
     {
-      BreakeButtonState = false;
+      BrakeButtonState = false;
       btnTimer = millis();
     }
   
