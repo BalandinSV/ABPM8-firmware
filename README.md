@@ -80,9 +80,10 @@ __```CLK```__ - Pulse Тактовые импульсы
 #define GearRatio 4 // Передаточное число редуктора
 ```
 Текст после двойнойного слэша $\color{grey}{\textsf{// Игнорируется программой}}$
-<h2>Видео</h2>
-Ссылка на <a href="https://youtu.be/_9E2vSRK5No">YouTube</a> <br>
-Ссылка на <a href="https://dzen.ru/video/watch/66b5f1579cfcc32754c732f5">Дзен</a> <br>
+<h2>Полезные сыылки</h2>
+<a href="https://youtu.be/_9E2vSRK5No">YouTube</a> <br>
+<a href="https://dzen.ru/video/watch/66b5f1579cfcc32754c732f5">Дзен</a> <br>
+<a href="https://dzen.ru/video/watch/66b5f1579cfcc32754c732f5">Telegram</a> <br>
 
 <h2>Применимость</h2>
 Может быть использован для системы управления вращением датчиков таких как<br>
