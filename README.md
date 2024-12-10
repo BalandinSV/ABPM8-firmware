@@ -59,7 +59,7 @@
 Например, для изменения ПЧ редуктора на 4 заменяем<br>
 
  ```c#
-  #define
+  #define GearRatio 1
  ```
     
 $\color{brown}{\textsf{\\#define GearRatio 1}}$ $\color{green}{\textsf{ // Передаточное число редуктора}}$ <br> 
