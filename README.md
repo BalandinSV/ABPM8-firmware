@@ -93,4 +93,4 @@ __```CLK```__ - Pulse Тактовые импульсы
 
 <h2>Схема соединений</h2>  
   
-![alt text]
+![alt text](https://github.com/BalandinSV/ABPM8-firmware/blob/main/Wiring%20diagram%20TMC2160.jpg)
