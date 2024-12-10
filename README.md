@@ -81,12 +81,9 @@ __```CLK```__ - Pulse Тактовые импульсы
 ```
 Текст после двойнойного слэша $\color{grey}{\textsf{// Игнорируется программой}}$
 <h2>Полезные сcылки</h2>
-
-<img src="https://github.com/BalandinSV/test-1.0/blob/main/telegram_2111646.png" alt="Alt Text" width="20" height="20">
-
 <a href="https://youtu.be/_9E2vSRK5No">YouTube</a> <br>
 <a href="https://dzen.ru/video/watch/66b5f1579cfcc32754c732f5">Дзен</a> <br>
-<a href="https://t.me/+-x8t7C2Ub1M3YzEy">Telegram</a> <br>
+<img src="https://github.com/BalandinSV/test-1.0/blob/main/telegram_2111646.png" alt="Alt Text" width="20" height="20"> <a href="https://t.me/+-x8t7C2Ub1M3YzEy">Telegram</a> <br>
 <a href="https://alexgyver.ru/arduino-first/">Гайд для новичков Arduino</a> <br>
 
 <h2>Применимость</h2>
