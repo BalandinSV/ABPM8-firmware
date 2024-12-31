@@ -185,3 +185,4 @@ BMI160.begin(BMI160GenClass::SPI_MODE, /* SS pin# = */10);
 <h2>Схема соединений</h2>  
   
 ![alt text](https://github.com/BalandinSV/ABPM8-firmware/blob/main/Wiring%20diagram%20TMC2160.jpg)
+![alt text](https://github.com/BalandinSV/ABPM8-firmware/blob/main/Wiring%20diagram%20BMI160.jpg)
