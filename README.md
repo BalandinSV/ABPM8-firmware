@@ -172,6 +172,7 @@ BMI160.begin(BMI160GenClass::SPI_MODE, /* SS pin# = */10);
 
 <a href="https://youtu.be/_9E2vSRK5No">YouTube</a> <br>
 <a href="https://dzen.ru/video/watch/66b5f1579cfcc32754c732f5">Дзен</a> <br>
+<a href="https://rutube.ru/video/936e8d830539a9d9069c96cddd189c3d/">RUTUBE</a> <br>
 <a href="https://t.me/+-x8t7C2Ub1M3YzEy">Telegram</a> <br>
 <a href="https://alexgyver.ru/arduino-first/">Гайд для новичков Arduino</a> <br>
 
