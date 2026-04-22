@@ -174,7 +174,7 @@ BMI160.begin(BMI160GenClass::SPI_MODE, /* SS pin# = */10);
 
 <h2>Полезные сcылки</h2>
 
-<a href="https://youtu.be/_9E2vSRK5No](https://max.ru/join/Bc9odZ7j1gvyPlTmAaJgsu9OtbIqoDgFvCj7U_wqYCE)">МАКС</a> <br>
+<a href="https://max.ru/join/Bc9odZ7j1gvyPlTmAaJgsu9OtbIqoDgFvCj7U_wqYCE">МАКС</a> <br>
 <a href="https://youtu.be/_9E2vSRK5No">YouTube</a> <br>
 <a href="https://dzen.ru/video/watch/66b5f1579cfcc32754c732f5">Дзен</a> <br>
 <a href="https://rutube.ru/video/936e8d830539a9d9069c96cddd189c3d/">RUTUBE</a> <br>
